@@ -103,8 +103,8 @@ pub const Plugin = struct {
         extism.output_set(offset, c_len);
     }
 
-    pub fn outputJson(self: Plugin, T: anytype, options: std.json.StringifyOptions) !void {
-        const out = try std.json.stringifyAlloc(self.allocator, T, options);
+    pub fn outputJson(self: Plugin, T: anytype, options: std.json.Stringify.Options) !void {
+        const out = try std.json.Stringify.valueAlloc(self.allocator, T, options);
         self.output(out);
     }
 
@@ -211,7 +211,7 @@ pub const Plugin = struct {
     }
 
     pub fn request(self: Plugin, http_request: http.HttpRequest, body: ?[]const u8) !http.HttpResponse {
-        const json = try std.json.stringifyAlloc(self.allocator, http_request, .{ .emit_null_optional_fields = false });
+        const json = try std.json.Stringify.valueAlloc(self.allocator, http_request, .{ .emit_null_optional_fields = false });
         defer self.allocator.free(json);
         const req = self.allocateBytes(json);
         const req_body = b: {

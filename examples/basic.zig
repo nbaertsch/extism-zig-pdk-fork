@@ -44,7 +44,7 @@ export fn count_vowels() i32 {
     plugin.log(.Debug, "plugin config get");
 
     const data = Output{ .count = vowelsCount, .config = thing, .a = var_a };
-    const output = std.json.stringifyAlloc(allocator, data, .{}) catch unreachable;
+    const output = std.json.Stringify.valueAlloc(allocator, data, .{}) catch unreachable;
     defer allocator.free(output);
     plugin.log(.Debug, "plugin json encoding");
 
@@ -220,7 +220,7 @@ export fn add() i32 {
 
     const params = std.json.parseFromSlice(Add, allocator, input, std.json.ParseOptions{}) catch unreachable;
     const sum = Sum{ .sum = params.value.a + params.value.b };
-    const output = std.json.stringifyAlloc(allocator, sum, std.json.StringifyOptions{}) catch unreachable;
+    const output = std.json.Stringify.valueAlloc(allocator, sum, std.json.Stringify.Options{}) catch unreachable;
     plugin.output(output);
     return 0;
 }
@@ -278,11 +278,11 @@ export fn nested_json() i32 {
     };
 
     // create the list of Inner to be used in the Outer struct
-    var innerForOuter = std.ArrayList(Inner).init(allocator);
-    defer innerForOuter.deinit();
+    var innerForOuter = std.ArrayList(Inner).empty;
+    defer innerForOuter.deinit(allocator);
     // add Inner in the amount specified by the input
     for (0..input.innerCount) |_| {
-        innerForOuter.append(inner) catch unreachable;
+        innerForOuter.append(allocator, inner) catch unreachable;
     }
 
     // create the Outer struct

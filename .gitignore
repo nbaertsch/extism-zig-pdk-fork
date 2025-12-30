@@ -2,3 +2,4 @@
 zig-out
 examples-out
 .DS_Store
+docs/

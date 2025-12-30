@@ -17,9 +17,11 @@ pub fn build(b: *std.Build) void {
 
     var basic_example = b.addExecutable(.{
         .name = "basic-example",
-        .root_source_file = b.path("examples/basic.zig"),
-        .target = target,
-        .optimize = optimize,
+        .root_module = b.addModule("basic-example", .{
+            .root_source_file = b.path("examples/basic.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
     });
     basic_example.rdynamic = true;
     basic_example.entry = .disabled; // or, add an empty `pub fn main() void {}` in your code

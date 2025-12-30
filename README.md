@@ -156,7 +156,7 @@ export fn add() i32 {
     const params = std.json.parseFromSlice(Add, allocator, input, std.json.ParseOptions{}) catch unreachable;
     const sum = Sum{ .sum = params.value.a + params.value.b };
 
-    const output = std.json.stringifyAlloc(allocator, sum, std.json.StringifyOptions{}) catch unreachable;
+    const output = std.json.Stringify.valueAlloc(allocator, sum, std.json.Stringify.Options{}) catch unreachable;
     plugin.output(output);
     return 0;
 }
